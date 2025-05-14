@@ -1,0 +1,85 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  standard:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+  
+  colored:
+    (): logging.formatters.colored_formatter.ColoredFormatter
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+  
+  json:
+    (): logging.formatters.json_formatter.JsonFormatter
+  
+  structured:
+    (): logging.formatters.structured_formatter.StructuredFormatter
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: colored
+    stream: ext://sys.stdout
+
+  file:
+    class: logging.handlers.rotating_file_handler.EnhancedRotatingFileHandler
+    level: INFO
+    formatter: structured
+    filename: data/logs/zgen.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: utf8
+
+  error_file:
+    class: logging.handlers.rotating_file_handler.EnhancedRotatingFileHandler
+    level: ERROR
+    formatter: structured
+    filename: data/logs/errors/error.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: utf8
+
+  metrics:
+    class: logging.handlers.metrics_handler.MetricsHandler
+    level: INFO
+    storage_path: data/metrics/logs
+    save_interval: 300
+    aggregation_interval: 60
+
+  slack:
+    class: logging.handlers.slack_handler.SlackNotificationHandler
+    level: ERROR
+
+loggers:
+  agent:
+    level: INFO
+    handlers: [console, file, error_file, metrics]
+    propagate: false
+
+  api:
+    level: INFO
+    handlers: [console, file, error_file, metrics]
+    propagate: false
+
+  scheduler:
+    level: INFO
+    handlers: [console, file, error_file, metrics]
+    propagate: false
+
+  monitoring:
+    level: INFO
+    handlers: [console, file, error_file, metrics]
+    propagate: false
+
+  task:
+    level: INFO
+    handlers: [console, file, error_file, metrics]
+    propagate: false
+
+root:
+  level: INFO
+  handlers: [console, file, error_file, metrics]
+  propagate: true

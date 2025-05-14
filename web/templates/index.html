@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Scout AI Agent</title>
+    <link rel="icon" href="/static/images/favicon.png">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div class="mx-auto max-w-7xl">
+        <!-- Header -->
+        <header class="bg-white dark:bg-gray-800 shadow">
+            <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+                <div class="flex items-center">
+                    <img src="/static/images/logo.png" alt="Local Scout" class="h-12 w-12 mr-3">
+                    <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Local Scout AI Agent</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                        <i class="fas fa-sun hidden dark:block"></i>
+                        <i class="fas fa-moon block dark:hidden"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <main>
+            <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+                <!-- Tabs -->
+                <div class="border-b border-gray-200 dark:border-gray-700">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
+                        <li class="mr-2" role="presentation">
+                            <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg active" id="chat-tab" data-tab="chat-content" type="button" role="tab" aria-controls="chat-content" aria-selected="true">
+                                <i class="fas fa-comment-alt mr-2"></i>Chat
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="tasks-tab" data-tab="tasks-content" type="button" role="tab" aria-controls="tasks-content" aria-selected="false">
+                                <i class="fas fa-tasks mr-2"></i>Tasks
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="schedules-tab" data-tab="schedules-content" type="button" role="tab" aria-controls="schedules-content" aria-selected="false">
+                                <i class="fas fa-calendar-alt mr-2"></i>Schedules
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tab content -->
+                <div class="tab-content">
+                    <!-- Chat content -->
+                    <div class="tab-pane active" id="chat-content">
+                        <div class="mt-4 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Chat with Scout</h2>
+                                <button id="clear-chat" class="px-3 py-1 text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                            </div>
+                            
+                            <div id="chat-messages" class="h-[500px] overflow-y-auto mb-4 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                <div class="flex flex-col space-y-4">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mr-3">
+                                            <div class="h-10 w-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold">
+                                                S
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">Scout</span>
+                                            <div class="bg-primary-100 dark:bg-primary-900 rounded-lg p-3 text-gray-800 dark:text-gray-200">
+                                                Hello! I'm your Local Scout AI agent. How can I help you today?
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input id="chat-input" type="text" placeholder="Type your message here..." class="flex-grow px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <button id="send-message" class="px-4 py-2 bg-primary-600 text-white rounded-r-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tasks content -->
+                    <div class="tab-pane hidden" id="tasks-content">
+                        <div class="mt-4 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Tasks</h2>
+                                <button id="new-task" class="px-3 py-1 text-sm bg-primary-600 text-white rounded hover:bg-primary-700">
+                                    <i class="fas fa-plus"></i> New Task
+                                </button>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex items-center p-2 border border-gray-200 dark:border-gray-700 rounded-lg">
+                                    <input id="task-search" type="text" placeholder="Search tasks..." class="flex-grow px-2 py-1 bg-transparent border-none focus:outline-none focus:ring-0 text-gray-800 dark:text-gray-200">
+                                    <div class="flex items-center">
+                                        <select id="task-status-filter" class="px-2 py-1 bg-transparent border-none text-sm text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-0">
+                                            <option value="all">All status</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="running">Running</option>
+                                            <option value="completed">Completed</option>
+                                            <option value="failed">Failed</option>
+                                        </select>
+                                        <select id="task-sort" class="px-2 py-1 bg-transparent border-none text-sm text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-0">
+                                            <option value="newest">Newest first</option>
+                                            <option value="oldest">Oldest first</option>
+                                            <option value="name">Name (A-Z)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="task-list" class="h-[450px] overflow-y-auto space-y-3">
+                                <!-- Tasks will be loaded here -->
+                                <div class="text-center text-gray-500 dark:text-gray-400 py-10">
+                                    No tasks yet
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schedules content -->
+                    <div class="tab-pane hidden" id="schedules-content">
+                        <div class="mt-4 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Scheduled Tasks</h2>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Task</th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Schedule</th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Next Run</th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="schedule-list" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <!-- Schedules will be loaded here -->
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
+                                                No scheduled tasks
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white dark:bg-gray-800 shadow">
+            <div class="mx-auto max-w-7xl py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Local Scout AI Agent - Running locally on your machine
+                </p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    <span id="connection-status" class="inline-flex items-center">
+                        <span class="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+                        Connected
+                    </span>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- New Task Modal -->
+    <div id="new-task-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Create New Task</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="task-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Task Name</label>
+                    <input id="task-name" type="text" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                </div>
+                
+                <div>
+                    <label for="task-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                    <textarea id="task-description" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"></textarea>
+                </div>
+                
+                <div>
+                    <label for="task-schedule-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Schedule (Optional)</label>
+                    <select id="task-schedule-type" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                        <option value="none">No Schedule</option>
+                        <option value="once">Run Once</option>
+                        <option value="interval">Run Every</option>
+                        <option value="cron">Cron Schedule</option>
+                    </select>
+                </div>
+                
+                <div id="schedule-options" class="hidden">
+                    <!-- Will be populated based on schedule type -->
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="cancel-task" class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">Cancel</button>
+                <button id="create-task" class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">Create Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Details Modal -->
+    <div id="task-details-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-4xl h-3/4 flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="task-details-title" class="text-xl font-semibold text-gray-900 dark:text-white">Task Details</h3>
+                <button id="close-task-details" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="flex-grow overflow-y-auto">
+                <div class="space-y-6">
+                    <div class="flex flex-col md:flex-row md:space-x-4">
+                        <div class="md:w-2/3 space-y-4">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</h4>
+                                <p id="task-details-description" class="mt-1 text-gray-900 dark:text-white"></p>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</h4>
+                                <div class="mt-1 flex items-center">
+                                    <span id="task-details-status-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"></span>
+                                    <div id="task-details-progress-container" class="ml-3 flex-grow h-2 bg-gray-200 dark:bg-gray-700 rounded">
+                                        <div id="task-details-progress" class="h-2 bg-primary-600 rounded" style="width: 0%"></div>
+                                    </div>
+                                    <span id="task-details-progress-text" class="ml-2 text-xs text-gray-500 dark:text-gray-400">0%</span>
+                                </div>
+                            </div>
+                            
+                            <div id="task-details-schedule-container" class="hidden">
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Schedule</h4>
+                                <p id="task-details-schedule" class="mt-1 text-gray-900 dark:text-white"></p>
+                                <p id="task-details-next-run" class="text-xs text-gray-500 dark:text-gray-400"></p>
+                            </div>
+                            
+                            <div id="task-details-result-container" class="hidden">
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Result</h4>
+                                <pre id="task-details-result" class="mt-1 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-900 dark:text-white overflow-x-auto"></pre>
+                            </div>
+                            
+                            <div id="task-details-error-container" class="hidden">
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Error</h4>
+                                <pre id="task-details-error" class="mt-1 p-3 bg-red-100 dark:bg-red-900 rounded-lg text-sm text-red-900 dark:text-red-100 overflow-x-auto"></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="md:w-1/3 mt-4 md:mt-0">
+                            <div id="task-details-artifacts-container" class="hidden mb-4">
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Artifacts</h4>
+                                <ul id="task-details-artifacts" class="mt-1 divide-y divide-gray-200 dark:divide-gray-700">
+                                    <!-- Artifacts will be added here -->
+                                </ul>
+                            </div>
+                            
+                            <div id="task-details-history-container">
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Execution History</h4>
+                                <ul id="task-details-history" class="mt-1 space-y-2">
+                                    <!-- History will be added here -->
+                                    <li class="text-center text-gray-500 dark:text-gray-400 py-4">
+                                        No execution history
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end space-x-3">
+                <div class="flex-grow">
+                    <button id="delete-task" class="px-4 py-2 border border-red-300 text-red-700 dark:border-red-700 dark:text-red-400 rounded-md hover:bg-red-50 dark:hover:bg-red-900">
+                        <i class="fas fa-trash mr-2"></i>Delete
+                    </button>
+                </div>
+                <div id="task-details-schedule-actions" class="hidden">
+                    <button id="cancel-schedule" class="px-4 py-2 border border-orange-300 text-orange-700 dark:border-orange-700 dark:text-orange-400 rounded-md hover:bg-orange-50 dark:hover:bg-orange-900 mr-2">
+                        <i class="fas fa-calendar-times mr-2"></i>Cancel Schedule
+                    </button>
+                </div>
+                <div id="task-details-other-actions">
+                    <button id="schedule-task" class="px-4 py-2 border border-blue-300 text-blue-700 dark:border-blue-700 dark:text-blue-400 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900 mr-2">
+                        <i class="fas fa-calendar-plus mr-2"></i>Schedule
+                    </button>
+                    <button id="run-task-now" class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">
+                        <i class="fas fa-play mr-2"></i>Run Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Task Modal -->
+    <div id="schedule-task-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Schedule Task</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="schedule-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Schedule Type</label>
+                    <select id="schedule-type" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                        <option value="once">Run Once</option>
+                        <option value="interval">Run Every</option>
+                        <option value="cron">Cron Schedule</option>
+                    </select>
+                </div>
+                
+                <div id="schedule-task-options">
+                    <!-- Will be populated based on schedule type -->
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="cancel-schedule-modal" class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">Cancel</button>
+                <button id="save-schedule" class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">Save Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

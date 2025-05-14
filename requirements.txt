@@ -1,0 +1,40 @@
+# Core dependencies
+python-dotenv==1.0.0
+pydantic==2.5.0
+
+# LLM and AI
+langchain==0.0.300
+langchain-community==0.0.15
+langchain-openai==0.0.5
+llama-cpp-python==0.2.11
+sentence-transformers==2.4.0
+huggingface-hub==0.20.0
+chromadb==0.4.22
+
+# Web and API
+fastapi==0.105.0
+uvicorn==0.24.0
+jinja2==3.1.2
+aiofiles==23.2.1
+websockets==11.0.3
+httpx==0.25.1
+beautifulsoup4==4.12.2
+requests==2.31.0
+
+# Task scheduling
+apscheduler==3.10.4
+pydantic-settings==2.1.0
+
+# Utility
+pytest==7.4.3
+pytest-asyncio==0.23.2
+rich==13.7.0
+tqdm==4.66.1
+numpy==1.26.2
+pandas==2.1.3
+
+# Development tools
+black==23.11.0
+isort==5.12.0
+mypy==1.7.1
+ruff==0.1.6
