@@ -1,0 +1,43 @@
+# Local Scout Configuration
+
+# Web Interface Settings
+WEB_PORT=8001
+WEB_HOST=0.0.0.0
+DEBUG=True
+SECRET_KEY=your_secret_key_here
+LOG_LEVEL=INFO
+
+# LLM Settings
+LLM_MODEL=llama2
+LLM_MODEL_PATH=./models/llama-2-7b-chat.gguf
+LLM_MAX_TOKENS=2048
+LLM_TEMPERATURE=0.7
+LLM_EMBEDDING_MODEL=all-MiniLM-L6-v2
+
+# External API Keys (optional)
+OPENAI_API_KEY=your_openai_api_key
+SERPAPI_API_KEY=your_serpapi_key
+GOOGLE_API_KEY=your_google_api_key
+GITHUB_TOKEN=your_github_token
+
+# Database Settings
+DB_TYPE=sqlite
+DB_PATH=./data/scout.db
+
+# Memory Settings
+MEMORY_TYPE=chroma
+MEMORY_PATH=./data/memory
+
+# Task Scheduler Settings
+SCHEDULER_PERSISTENCE_PATH=./data/scheduler
+SCHEDULER_MAX_WORKERS=5
+
+# Tool Settings
+ENABLE_FILE_TOOLS=True
+ENABLE_WEB_TOOLS=True
+ENABLE_CODE_TOOLS=True
+ENABLE_DATA_TOOLS=True
+
+# Security Settings
+TOKEN_EXPIRATION_MINUTES=60
+CORS_ORIGINS=http://localhost:8001,http://127.0.0.1:8001
